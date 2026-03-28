@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INMEA | Solo Clash Squad 2v2</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap');
+
+        :root {
+            --primary: #ff4655;
+            --secondary: #00f2ff;
+            --bg: #050608;
+            --card-bg: rgba(20, 23, 33, 0.98);
+        }
+
+        * { box-sizing: border-box; scroll-behavior: smooth; }
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg);
+            color: #fff;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- BACKGROUND EFFECTS --- */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 20%, black 150%);
+            pointer-events: none; z-index: 1;
+        }
+
+        /* --- NEW MUSIC PLAYER --- */
+        .audio-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: var(--card-bg);
+            border: 1px solid var(--primary);
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-main {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 10vw, 5rem);
+            font-weight: 900;
+            letter-spacing: 10px;
+            background: linear-gradient(to bottom, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            filter: drop-shadow(0 0 20px rgba(255, 70, 85, 0.5));
+        }
+
+        .countdown-wrap {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .time-unit {
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 3px solid var(--primary);
+            padding: 15px;
+            min-width: 85px;
+            border-radius: 10px;
+        }
+
+        .time-unit span { display: block; font-family: 'Orbitron'; font-size: 2.2rem; color: var(--secondary); }
+        .time-unit label { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+
+        .live-section {
+            max-width: 900px;
+            margin: 40px auto;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .live-btn {
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 20px 50px;
+            font-family: 'Orbitron';
+            font-weight: bold;
+            display: inline-block;
+            border-radius: 5px;
+            animation: pulseRed 2s infinite;
+            clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+        }
+
+        @keyframes pulseRed {
+            0% { box-shadow: 0 0 0 0 rgba(255, 70, 85, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 70, 85, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 70, 85, 0); }
+        }
+
+        /* --- BRACKET GRID --- */
+        .bracket-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 40px 20px;
+        }
+
+        .match-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .match-card:hover { border-color: var(--secondary); transform: scale(1.02); }
+
+        .team-box { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
+        .team-name { font-size: 1.3rem; font-weight: 700; color: #eee; }
+        .vs-badge { color: var(--primary); font-weight: 900; text-align: center; font-family: 'Orbitron'; font-size: 0.8rem; margin: 10px 0; }
+
+        .locked-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px dashed #333;
+            padding: 60px;
+            text-align: center;
+            margin: 40px 20px;
+            border-radius: 20px;
+            color: #555;
+        }
+
+        footer { text-align: center; padding: 50px; color: #444; border-top: 1px solid #111; }
+
+    </style>
+</head>
+<body>
+
+    <div class="vignette"></div>
+
+    <!-- AUDIO PLAYER (NEW THEME: THE CHASE) -->
+    <div class="audio-player">
+        <i class="fas fa-bolt" style="color: var(--secondary);"></i>
+        <span style="font-size: 0.8rem; font-family: 'Orbitron';">BATTLE MIX</span>
+        <audio id="tournamentTheme" loop>
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+        </audio>
+        <button onclick="toggleMusic()" id="musicBtn" style="background: none; border: none; color: white; cursor: pointer;">
+            <i class="fas fa-play"></i>
+        </button>
+    </div>
+
+    <header>
+        <p style="letter-spacing: 5px; color: var(--secondary);">NOT LIKE US | INMEA PRESENTS</p>
+        <h1 class="logo-main">SQUAD CLASH</h1>
+        
+        <div class="countdown-wrap" id="countdown">
+            <div class="time-unit"><span id="days">00</span><label>Days</label></div>
+            <div class="time-unit"><span id="hours">00</span><label>Hours</label></div>
+            <div class="time-unit"><span id="mins">00</span><label>Minutes</label></div>
+            <div class="time-unit"><span id="secs">00</span><label>Seconds</label></div>
+        </div>
+    </header>
+
+    <section class="live-section">
+        <h2 style="font-family: 'Orbitron'; margin-bottom: 25px;">📺 WATCH LIVE STREAM</h2>
+        <a href="https://www.tiktok.com/@notlikeus_inmea?_r=1&_t=ZS-954BGfXTfrI" target="_blank" class="live-btn">
+            <i class="fab fa-tiktok"></i> JOIN TIKTOK LIVE
+        </a>
+        <p style="margin-top: 15px; color: #888;">Live coverage starts March 29, 15:00 sharp.</p>
+    </section>
+
+    <!-- BRACKET - UPDATED TO MATCH IMAGE -->
+    <div class="bracket-container">
+        <!-- MATCH 1 (AS PER IMAGE) -->
+        <div class="match-card">
+            <div class="team-box"><span class="team-name">Jinwoo & Raistar</span></div>
+            <div class="vs-badge">VS</div>
+            <div class="team-box"><span class="team-name">Inferno & Soul</span></div>
+        </div>
+        <!-- MATCH 2 -->
+        <div class="match-card">
+            <div class="team-box"><span class="team-name">Popsi & Scarz</span></div>
+            <div class="vs-badge">VS</div>
+            <div class="team-box"><span class="team-name">Allen & Novaxz</span></div>
+        </div>
+        <!-- MATCH 3 (AS PER IMAGE) -->
+        <div class="match-card">
+            <div class="team-box"><span class="team-name">Alexa & Zazu</span></div>
+            <div class="vs-badge">VS</div>
+            <div class="team-box"><span class="team-name">Kay & Motal</span></div>
+        </div>
+        <!-- MATCH 4 -->
+        <div class="match-card">
+            <div class="team-box"><span class="team-name">Idan & P.Shade</span></div>
+            <div class="vs-badge">VS</div>
+            <div class="team-box"><span class="team-name">Tyler & Nova</span></div>
+        </div>
+        <!-- MATCH 5 -->
+        <div class="match-card">
+            <div class="team-box"><span class="team-name">Grandpa & Tsuki</span></div>
+            <div class="vs-badge">VS</div>
+            <div class="team-box"><span class="team-name">Dnd & Keneki (God)</span></div>
+        </div>
+        <!-- MATCH 6 -->
+        <div class="match-card">
+            <div class="team-box"><span class="team-name">Psycho & Slazy</span></div>
+            <div class="vs-badge">VS</div>
+            <div class="team-box"><span class="team-name">Saka.fx & Okarun</span></div>
+        </div>
+        <!-- MATCH 7 -->
+        <div class="match-card">
+            <div class="team-box"><span class="team-name">Vortex (Azreal) & Levi</span></div>
+            <div class="vs-badge">VS</div>
+            <div class="team-box"><span class="team-name">Jhayone & Lunatic</span></div>
+        </div>
+        <!-- MATCH 8 -->
+        <div class="match-card">
+            <div class="team-box"><span class="team-name">Miracle & Ladyblex</span></div>
+            <div class="vs-badge">VS</div>
+            <div class="team-box"><span class="team-name">Onomos (NL) & Nagi*</span></div>
+        </div>
+    </div>
+
+    <h2 style="text-align: center; font-family: 'Orbitron'; margin-top: 50px;">KILL LEADERBOARD</h2>
+    <div class="locked-section">
+        <i class="fas fa-lock" style="font-size: 3rem; margin-bottom: 20px;"></i>
+        <h3>STAY TUNED</h3>
+        <p>Leaderboard will update in real-time once Round 1 begins.</p>
+    </div>
+
+    <h2 style="text-align: center; font-family: 'Orbitron'; margin-top: 50px;">MATCH GALLERY</h2>
+    <div class="locked-section">
+        <i class="fas fa-images" style="font-size: 3rem; margin-bottom: 20px;"></i>
+        <h3>GALLERY LOCKED</h3>
+        <p>Winning moments will be posted here.</p>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 INMEA TOURNAMENTS. NOT AFFILIATED WITH GARENA.</p>
+    </footer>
+
+    <script>
+        const targetDate = new Date("March 29, 2026 15:00:00").getTime();
+
+        function runCountdown() {
+            const now = new Date().getTime();
+            const gap = targetDate - now;
+            if (gap <= 0) {
+                document.getElementById('countdown').innerHTML = "<h2 style='color:var(--primary)'>TOURNAMENT LIVE</h2>";
+                return;
+            }
+            const d = Math.floor(gap / (1000 * 60 * 60 * 24));
+            const h = Math.floor((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((gap % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((gap % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+            document.getElementById('mins').innerText = m.toString().padStart(2, '0');
+            document.getElementById('secs').innerText = s.toString().padStart(2, '0');
+        }
+
+        setInterval(runCountdown, 1000);
+        runCountdown();
+
+        const audio = document.getElementById("tournamentTheme");
+        const mBtn = document.getElementById("musicBtn");
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                mBtn.innerHTML = '<i class="fas fa-play"></i>';
+            } else {
+                audio.play();
+                mBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            }
+            isPlaying = !isPlaying;
+        }
+    </script>
+</body>
+</html>
