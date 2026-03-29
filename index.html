@@ -134,16 +134,71 @@
 
         .team-box { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
         .team-name { font-size: 1.3rem; font-weight: 700; color: #eee; }
+        .team-name.winner { color: var(--secondary); text-shadow: 0 0 10px var(--secondary); }
+        .team-name.lost { color: #444; text-decoration: line-through; }
+        
         .vs-badge { color: var(--primary); font-weight: 900; text-align: center; font-family: 'Orbitron'; font-size: 0.8rem; margin: 10px 0; }
+        .winner-badge { color: var(--secondary); font-weight: 900; text-align: center; font-family: 'Orbitron'; font-size: 0.8rem; margin: 10px 0; }
 
-        .locked-section {
-            background: rgba(255, 255, 255, 0.03);
-            border: 2px dashed #333;
-            padding: 60px;
-            text-align: center;
-            margin: 40px 20px;
-            border-radius: 20px;
-            color: #555;
+        /* --- LEADERBOARD STYLE --- */
+        .leaderboard-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+
+        .leader-row {
+            display: grid;
+            grid-template-columns: 80px 1fr 120px;
+            padding: 15px 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            align-items: center;
+        }
+
+        .leader-row:first-child { background: rgba(255, 70, 85, 0.1); color: var(--primary); font-family: 'Orbitron'; font-weight: bold; }
+        .rank { font-family: 'Orbitron'; color: var(--secondary); font-size: 1.2rem; }
+        .player-kill { text-align: right; font-family: 'Orbitron'; color: var(--primary); font-weight: bold; }
+
+        /* --- GALLERY GRID --- */
+        .gallery-container {
+            max-width: 1200px;
+            margin: 20px auto 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: 0.4s;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s;
+        }
+
+        .gallery-item:hover { border-color: var(--secondary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 242, 255, 0.2); }
+        .gallery-item:hover img { transform: scale(1.1); }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 15px;
+            font-family: 'Orbitron';
+            font-size: 0.9rem;
+            color: var(--secondary);
         }
 
         footer { text-align: center; padding: 50px; color: #444; border-top: 1px solid #111; }
@@ -154,7 +209,7 @@
 
     <div class="vignette"></div>
 
-    <!-- AUDIO PLAYER (NEW THEME: THE CHASE) -->
+    <!-- AUDIO PLAYER -->
     <div class="audio-player">
         <i class="fas fa-bolt" style="color: var(--secondary);"></i>
         <span style="font-size: 0.8rem; font-family: 'Orbitron';">BATTLE MIX</span>
@@ -186,31 +241,31 @@
         <p style="margin-top: 15px; color: #888;">Live coverage starts March 29, 15:00 sharp.</p>
     </section>
 
-    <!-- BRACKET - UPDATED TO MATCH IMAGE -->
+    <!-- BRACKET -->
     <div class="bracket-container">
-        <!-- MATCH 1 (AS PER IMAGE) -->
-        <div class="match-card">
-            <div class="team-box"><span class="team-name">Jinwoo & Raistar</span></div>
-            <div class="vs-badge">VS</div>
-            <div class="team-box"><span class="team-name">Inferno & Soul</span></div>
+        <!-- MATCH 1 -->
+        <div class="match-card" style="border-color: var(--secondary);">
+            <div class="team-box"><span class="team-name lost">Jinwoo & Raistar</span></div>
+            <div class="winner-badge">WINNER <i class="fas fa-chevron-down"></i></div>
+            <div class="team-box"><span class="team-name winner">Inferno & Soul</span></div>
         </div>
         <!-- MATCH 2 -->
-        <div class="match-card">
-            <div class="team-box"><span class="team-name">Popsi & Scarz</span></div>
-            <div class="vs-badge">VS</div>
-            <div class="team-box"><span class="team-name">Allen & Novaxz</span></div>
+        <div class="match-card" style="border-color: var(--secondary);">
+            <div class="team-box"><span class="team-name winner">Popsi & Scarz</span></div>
+            <div class="winner-badge">WINNER <i class="fas fa-chevron-up"></i></div>
+            <div class="team-box"><span class="team-name lost">Allen & Novaxz</span></div>
         </div>
-        <!-- MATCH 3 (AS PER IMAGE) -->
+        <!-- MATCH 3 -->
         <div class="match-card">
             <div class="team-box"><span class="team-name">Alexa & Zazu</span></div>
             <div class="vs-badge">VS</div>
             <div class="team-box"><span class="team-name">Kay & Motal</span></div>
         </div>
-        <!-- MATCH 4 -->
-        <div class="match-card">
-            <div class="team-box"><span class="team-name">Idan & P.Shade</span></div>
-            <div class="vs-badge">VS</div>
-            <div class="team-box"><span class="team-name">Tyler & Nova</span></div>
+        <!-- MATCH 4 - NEW RESULT -->
+        <div class="match-card" style="border-color: var(--secondary);">
+            <div class="team-box"><span class="team-name lost">Idan & P.Shade</span></div>
+            <div class="winner-badge">WINNER <i class="fas fa-chevron-down"></i></div>
+            <div class="team-box"><span class="team-name winner">Tyler & Nova</span></div>
         </div>
         <!-- MATCH 5 -->
         <div class="match-card">
@@ -238,18 +293,85 @@
         </div>
     </div>
 
+    <!-- KILL LEADERBOARD -->
     <h2 style="text-align: center; font-family: 'Orbitron'; margin-top: 50px;">KILL LEADERBOARD</h2>
-    <div class="locked-section">
-        <i class="fas fa-lock" style="font-size: 3rem; margin-bottom: 20px;"></i>
-        <h3>STAY TUNED</h3>
-        <p>Leaderboard will update in real-time once Round 1 begins.</p>
+    <div class="leaderboard-container">
+        <div class="leader-row">
+            <span>RANK</span>
+            <span>PLAYER</span>
+            <span style="text-align: right;">KILLS</span>
+        </div>
+        <div class="leader-row">
+            <span class="rank">#1</span>
+            <span class="team-name">Soul</span>
+            <span class="player-kill">12</span>
+        </div>
+        <div class="leader-row">
+            <span class="rank">#1</span>
+            <span class="team-name">Tyler</span>
+            <span class="player-kill">12</span>
+        </div>
+        <div class="leader-row">
+            <span class="rank">#3</span>
+            <span class="team-name">Scarz</span>
+            <span class="player-kill">8</span>
+        </div>
+        <div class="leader-row">
+            <span class="rank">#3</span>
+            <span class="team-name">Idan</span>
+            <span class="player-kill">8</span>
+        </div>
+        <div class="leader-row">
+            <span class="rank">#5</span>
+            <span class="team-name">Popsi</span>
+            <span class="player-kill">6</span>
+        </div>
+        <div class="leader-row">
+            <span class="rank">#6</span>
+            <span class="team-name">P.Shade</span>
+            <span class="player-kill">5</span>
+        </div>
+        <div class="leader-row">
+            <span class="rank">#7</span>
+            <span class="team-name">Allen</span>
+            <span class="player-kill">4</span>
+        </div>
+        <div class="leader-row">
+            <span class="rank">#7</span>
+            <span class="team-name">Nova</span>
+            <span class="player-kill">4</span>
+        </div>
+        <div class="leader-row">
+            <span class="rank">#9</span>
+            <span class="team-name">Inferno</span>
+            <span class="player-kill">3</span>
+        </div>
+        <div class="leader-row">
+            <span class="rank">#10</span>
+            <span class="team-name">Jinwoo</span>
+            <span class="player-kill">2</span>
+        </div>
+        <div class="leader-row">
+            <span class="rank">#11</span>
+            <span class="team-name">Raistar</span>
+            <span class="player-kill">1</span>
+        </div>
     </div>
 
     <h2 style="text-align: center; font-family: 'Orbitron'; margin-top: 50px;">MATCH GALLERY</h2>
-    <div class="locked-section">
-        <i class="fas fa-images" style="font-size: 3rem; margin-bottom: 20px;"></i>
-        <h3>GALLERY LOCKED</h3>
-        <p>Winning moments will be posted here.</p>
+    <div class="gallery-container">
+        <div class="gallery-item">
+            <img src="https://i.ibb.co/G3MWwt0h/f15acfbf-23ff-44dc-a60d-10d4ad6ac7b3.jpg" alt="Match 1 Result">
+            <div class="gallery-overlay">MATCH 1: INFERNO & SOUL WIN</div>
+        </div>
+        <div class="gallery-item">
+            <img src="https://i.ibb.co/HT7ZyQqt/1a38f0a5-dde7-4d7f-bdc6-7fcbce6def2f.jpg" alt="Match 2 Result">
+            <div class="gallery-overlay">MATCH 2: POPSI & SCARZ WIN</div>
+        </div>
+        <div class="gallery-item">
+            <img src="https://i.ibb.co/dwBtZnHK/bf6fab4c-b0f4-4810-9052-6bb27f56cf78.jpg" alt="Match 4 Result">
+            <div class="gallery-overlay">MATCH 4: TYLER & NOVA WIN</div>
+        </div>
     </div>
 
     <footer>
