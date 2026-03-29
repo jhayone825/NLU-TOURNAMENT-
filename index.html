@@ -48,6 +48,17 @@
             box-shadow: 0 0 15px var(--primary);
         }
 
+        /* Animation for the play button */
+        #musicBtn {
+            animation: pulsePlay 2s infinite;
+        }
+
+        @keyframes pulsePlay {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; color: var(--secondary); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         header {
             text-align: center;
             padding: 60px 20px;
@@ -211,13 +222,13 @@
 
     <!-- AUDIO PLAYER -->
     <div class="audio-player">
-        <i class="fas fa-bolt" style="color: var(--secondary);"></i>
-        <span style="font-size: 0.8rem; font-family: 'Orbitron';">BATTLE MIX</span>
+        <i class="fas fa-skull" style="color: var(--primary);"></i>
+        <span style="font-size: 0.8rem; font-family: 'Orbitron';">PHONK MIX</span>
         <audio id="tournamentTheme" loop>
-            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
         </audio>
         <button onclick="toggleMusic()" id="musicBtn" style="background: none; border: none; color: white; cursor: pointer;">
-            <i class="fas fa-play"></i>
+            <i class="fas fa-play" id="playIcon"></i>
         </button>
     </div>
 
@@ -404,15 +415,18 @@
 
         const audio = document.getElementById("tournamentTheme");
         const mBtn = document.getElementById("musicBtn");
+        const playIcon = document.getElementById("playIcon");
         let isPlaying = false;
 
         function toggleMusic() {
             if (isPlaying) {
                 audio.pause();
-                mBtn.innerHTML = '<i class="fas fa-play"></i>';
+                playIcon.className = 'fas fa-play';
+                mBtn.style.animation = 'pulsePlay 2s infinite';
             } else {
-                audio.play();
-                mBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                audio.play().catch(e => console.log("Click play to start music"));
+                playIcon.className = 'fas fa-pause';
+                mBtn.style.animation = 'none'; // Stop pulse when playing
             }
             isPlaying = !isPlaying;
         }
